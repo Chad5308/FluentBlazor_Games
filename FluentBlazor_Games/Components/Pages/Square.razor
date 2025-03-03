@@ -1,0 +1,70 @@
+﻿@using Microsoft.FluentUI.AspNetCore.Components.Icons.Filled
+@namespace FluentBlazor_Games
+<title>Square</title>
+
+<FluentButton Appearance="Appearance.Accent" OnClick="@(()=>SwitchState())"> 
+    @StateValue()
+</FluentButton>
+
+
+
+
+@code
+{
+    [Parameter]
+    public int id { get; set; }
+
+    [CascadingParameter]
+    public Board Board { get; set; }
+
+    public SquareState State { get; set; } = SquareState.Empty;
+    public SquareState DesiredState { get; set; } = SquareState.Empty;
+
+
+    protected override void OnParametersSet()
+    {
+        if (Board is null)
+        {
+
+        }
+        base.OnParametersSet();
+    }
+
+    public string StateValue ()
+    {
+   
+        switch (DesiredState)
+        {
+            case SquareState.O:
+                switch (State)
+                {
+                    case SquareState.Empty:
+                        State = SquareState.O;
+                        Board.EndTurn();
+                        return "O";
+                }
+                break;
+            case SquareState.X:
+                switch (State)
+                {
+                    case SquareState.Empty:
+                        State = SquareState.X;
+                        Board.EndTurn();
+                        return "X";
+                }
+                break;
+            case SquareState.Empty:
+                return "";
+                break;
+
+        }
+
+        return State == SquareState.X ? "X" : "O";
+    }
+
+
+    void SwitchState()
+    {
+        DesiredState = Board.CurrentPlayer;
+    }
+}

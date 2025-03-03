@@ -1,0 +1,58 @@
+﻿@page "/Board"
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Filled
+@rendermode InteractiveServer
+
+
+@namespace FluentBlazor_Games
+
+<h3>Tic Tac Toe Board</h3>
+
+<CascadingValue Value="this">
+    <div style="display : grid; grid-template-columns: repeat(3, 50px); grid-gap: 10px; ">
+        @for (int row = 0; row < 3; row++)
+        {
+            for (int col = 0; col < 3; col++)
+            {
+                <Square id="(row*10)+col"></Square>
+                if (checkWinner(row * 10 + col))
+                {
+
+                }
+            }
+        }
+    </div>
+
+    <div>
+        @if (winner)
+        {
+            <h3>Winner</h3>
+        }
+    </div>
+</CascadingValue>
+
+@code
+{
+    public SquareState CurrentPlayer { get; set; } = SquareState.X;
+    public int moveCounter = 0;
+    public Boolean winner { get; set; } = false;
+
+    public void EndTurn()
+    {
+        if (CurrentPlayer == SquareState.X)
+            CurrentPlayer = SquareState.O;
+        else
+        {
+            CurrentPlayer = SquareState.X;
+        }
+
+        StateHasChanged();
+
+    }
+
+    public Boolean checkWinner(int i)
+    {
+        return i > 20;
+    }
+
+    
+}
