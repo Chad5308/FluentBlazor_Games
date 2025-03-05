@@ -13,19 +13,19 @@
         {
             for (int col = 0; col < 3; col++)
             {
-                <Square id="(row*10)+col"></Square>
-                if (checkWinner(row * 10 + col))
-                {
-
-                }
+                <Square Row="row" Col="col"/>
             }
         }
     </div>
 
     <div>
-        @if (winner)
+        @if(moveCounter>4)
         {
-            <h3>Winner</h3>
+            SquareState winner = CheckWinner();
+            if (winner != SquareState.Empty)
+            {
+                <h3>Winner is @winner.ToString()</h3>
+            }
         }
     </div>
 </CascadingValue>
@@ -34,7 +34,14 @@
 {
     public SquareState CurrentPlayer { get; set; } = SquareState.X;
     public int moveCounter = 0;
-    public Boolean winner { get; set; } = false;
+    public Boolean winner { get; set; } = true;
+
+    public Square[,] board = new Square[3,3];
+
+    public void RegisterSquare(Square square)
+    {
+        board[square.Row, square.Col] = square;
+    }
 
     public void EndTurn()
     {
@@ -45,14 +52,61 @@
             CurrentPlayer = SquareState.X;
         }
 
+        moveCounter++;
         StateHasChanged();
 
     }
 
-    public Boolean checkWinner(int i)
+    public SquareState CheckWinner()
     {
-        return i > 20;
+        // Check each row and see if there are three equal values and the first column isn't empty, if true return the first column
+
+        // Row check
+        for (int i = 0; i < 3; i++)
+        {
+
+            if (board[i, 0].State == board[i, 1].State && board[i, 0].State == board[i, 2].State)
+            {
+                board[i, 0].ButtonReference.Style = "background-color: red";
+                board[i, 1].ButtonReference.Style = "background-color: red";
+                board[i, 2].ButtonReference.Style = "background-color: red";
+                return board[i, 0].State;
+            }
+            
+        }
+
+        // Col check
+        for (int i = 0; i < 3; i++)
+        {
+
+            if (board[0,i].State == board[1,i].State && board[0,i].State == board[2,i].State)
+            {
+                board[0, i].ButtonReference.Style = "background-color: red";
+                board[1, i].ButtonReference.Style = "background-color: red";
+                board[2, i].ButtonReference.Style = "background-color: red";
+                return board[0, i].State;
+            }
+
+        }
+
+        if (board[0, 0].State == board[1, 1].State && board[0, 0].State == board[2, 2].State)
+        {
+            board[0, 0].ButtonReference.Style = "background-color: red";
+            board[1, 1].ButtonReference.Style = "background-color: red";
+            board[2, 2].ButtonReference.Style = "background-color: red";
+            return board[1, 1].State;
+        }
+        if (board[0, 2].State == board[1, 1].State && board[0, 2].State == board[2, 0].State)
+        {
+            board[0, 2].ButtonReference.Style = "background-color: red";
+            board[1, 1].ButtonReference.Style = "background-color: red";
+            board[2, 0].ButtonReference.Style = "background-color: red";
+            return board[1, 1].State;
+        }
+
+        return SquareState.Empty;
     }
+
 
     
 }

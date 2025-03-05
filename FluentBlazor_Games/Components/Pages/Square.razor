@@ -2,7 +2,7 @@
 @namespace FluentBlazor_Games
 <title>Square</title>
 
-<FluentButton Appearance="Appearance.Accent" OnClick="@(()=>SwitchState())"> 
+<FluentButton @ref="ButtonReference" Appearance="Appearance.Accent" OnClick="@(()=>SwitchState())"> 
     @StateValue()
 </FluentButton>
 
@@ -11,8 +11,14 @@
 
 @code
 {
+    public FluentButton ButtonReference { get; set; } = default!;
+
     [Parameter]
-    public int id { get; set; }
+    public int Row { get; set; }
+
+    [Parameter]
+    public int Col { get; set; }
+
 
     [CascadingParameter]
     public Board Board { get; set; }
@@ -23,11 +29,14 @@
 
     protected override void OnParametersSet()
     {
-        if (Board is null)
-        {
+        Board.RegisterSquare(this);
 
-        }
         base.OnParametersSet();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+       
     }
 
     public string StateValue ()
